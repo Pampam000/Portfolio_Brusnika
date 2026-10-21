@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: Brusnika API
+  description: API для онлайн-продаж квартир
+  version: "1.0.0"
+
+servers:
+  - url: https://api.brusnika.ru/v1
+
+tags:
+  - name: Apartments
+    description: Квартиры
+  - name: Contracts
+    description: Контракты
+
+paths:
+  /apartments:
+    get:
+      summary: Список квартир
+      tags: [Apartments]
+      parameters:
+        - name: project_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [available, reserved, sold]
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Apartment"
+
+  /apartments/{id}:
+    get:
+      summary: Карточка квартиры
+      tags: [Apartments]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Apartment"
+        "404":
+          description: Не найдено
+
+  /contracts:
+    post:
+      summary: Создать контракт
+      tags: [Contracts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContractCreate"
+      responses:
+        "201":
+          description: Контракт создан
+        "409":
+          description: Квартира уже продана
+
+  /contracts/{id}:
+    patch:
+      summary: Обновить статус контракта
+      tags: [Contracts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [draft, signed, completed]
+      responses:
+        "200":
+          description: Обновлено
+
+components:
+  schemas:
+    Apartment:
+      type: object
+      properties:
+        id:
+          type: integer
+        project_id:
+          type: integer
+        type:
+          type: string
+          enum: [studio, one_room, two_room, three_room]
+        floor:
+          type: integer
+        area:
+          type: number
+        price:
+          type: number
+        status:
+          type: string
+          enum: [available, reserved, sold]
+
+    ContractCreate:
+      type: object
+      required: [apartment_id, client_id]
+      properties:
+        apartment_id:
+          type: integer
+        client_id:
+          type: integer
+        total_price:
+          type: number
+        status:
+          type: string
+          enum: [draft, signed, completed]
+        signed_date:
+          type: string
+          format: date-time

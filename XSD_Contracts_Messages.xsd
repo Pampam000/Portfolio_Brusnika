@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://brusnika.ru/contracts"
+           xmlns="http://brusnika.ru/contracts"
+           elementFormDefault="qualified">
+
+    <!-- Запрос: список квартир -->
+    <xs:element name="ApartmentsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="project_id" type="xs:int"/>
+                <xs:element name="status" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Ответ: список квартир -->
+    <xs:element name="ApartmentsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="apartment" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="id" type="xs:int"/>
+                            <xs:element name="project_id" type="xs:int"/>
+                            <xs:element name="type" type="xs:string"/>
+                            <xs:element name="floor" type="xs:int"/>
+                            <xs:element name="area" type="xs:decimal"/>
+                            <xs:element name="price" type="xs:decimal"/>
+                            <xs:element name="status" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Запрос: создание контракта -->
+    <xs:element name="ContractRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="apartment_id" type="xs:int"/>
+                <xs:element name="client_id" type="xs:int"/>
+                <xs:element name="total_price" type="xs:decimal"/>
+                <xs:element name="status" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Ответ: контракт -->
+    <xs:element name="ContractResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+                <xs:element name="apartment_id" type="xs:int"/>
+                <xs:element name="client_id" type="xs:int"/>
+                <xs:element name="total_price" type="xs:decimal"/>
+                <xs:element name="status" type="xs:string"/>
+                <xs:element name="signed_date" type="xs:dateTime"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
